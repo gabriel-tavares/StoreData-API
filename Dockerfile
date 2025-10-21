@@ -21,7 +21,9 @@ COPY package.json package-lock.json ./
 RUN npm ci --only=production
 
 # Copiar código fonte
-COPY . .
+COPY server.js ./
+COPY routes/ ./routes/
+COPY lib/ ./lib/
 
 # Criar usuário não-root para segurança
 RUN addgroup -g 1001 -S nodejs
