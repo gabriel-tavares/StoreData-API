@@ -1,6 +1,6 @@
 FROM node:18-alpine
 
-# Instalar dependências do sistema necessárias para Puppeteer
+# Instalar dependências do sistema para Puppeteer
 RUN apk add --no-cache \
     chromium \
     nss \
@@ -16,13 +16,11 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
 
 WORKDIR /app
 
-# Copiar arquivos de dependências
-COPY package*.json ./
-
-# Instalar dependências
+# Copiar package.json e instalar dependências
+COPY package.json package-lock.json ./
 RUN npm ci --only=production
 
-# Copiar código da aplicação
+# Copiar código fonte
 COPY . .
 
 # Criar usuário não-root para segurança
@@ -37,8 +35,8 @@ USER nextjs
 EXPOSE 3001
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:3001/api/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:3001/api/health || exit 1
 
 # Comando para iniciar
 CMD ["npm", "start"]
