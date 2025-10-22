@@ -146,12 +146,8 @@ router.get('/reviews/:store/:appId', async (req, res) => {
     if (value.store === 'google') {
       result = await scraper.googlePlay.getReviews(value.appId, value.reviewsCount, value.country);
     } else {
-      // Para Apple, usar método com respostas do desenvolvedor se disponível
-      if (value.reviewsCount <= 5) {
-        result = await scraper.appleStore.getReviewsWithReplies(value.appId, value.country);
-      } else {
-        result = await scraper.appleStore.getReviews(value.appId, 1, value.country);
-      }
+      // Para Apple, sempre usar método com respostas do desenvolvedor
+      result = await scraper.appleStore.getReviewsWithReplies(value.appId, value.country);
     }
 
     if (!result.success) {
