@@ -17,13 +17,13 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
 WORKDIR /app
 
 # Copiar package.json e instalar dependências
-COPY package.json package-lock.json ./
+COPY store-data-api/package.json store-data-api/package-lock.json ./
 RUN npm ci --only=production
 
 # Copiar código fonte
-COPY server.js ./
-COPY routes/ ./routes/
-COPY lib/ ./lib/
+COPY store-data-api/server.js ./
+COPY store-data-api/routes/ ./routes/
+COPY store-data-api/lib/ ./lib/
 
 # Criar usuário não-root para segurança
 RUN addgroup -g 1001 -S nodejs
